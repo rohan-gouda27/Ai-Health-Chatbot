@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal AI Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .auth-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .auth-form {
+            flex: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        button:hover {
+            transform: translateY(-1px);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .message {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
+        }
+        
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .user-message {
+            background: #667eea;
+            color: white;
+            margin-left: 20%;
+        }
+        
+        .ai-message {
+            background: white;
+            border: 1px solid #ddd;
+            margin-right: 20%;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #333;
+        }
+        
+        .image-preview {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-message img {
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Personal AI Agent</h1>
+            <p>Your intelligent assistant powered by Google Gemini</p>
+        </div>
+        
+        <!-- Authentication Section -->
+        <div id="auth-section" class="card">
+            <h2>Get Started</h2>
+            <div class="auth-section">
+                <div class="auth-form">
+                    <h3>Register</h3>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="reg-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="reg-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="reg-password" required>
+                        </div>
+                        <button type="submit">Create Account</button>
+                    </form>
+                </div>
+                
+                <div class="auth-form">
+                    <h3>Login</h3>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit">Sign In</button>
+                    </form>
+                </div>
+            </div>
+            <div id="auth-message"></div>
+        </div>
+        
+        <!-- Main App Section -->
+        <div id="app-section" class="hidden">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Welcome, <span id="username"></span>!</h2>
+                    <button onclick="logout()">Logout</button>
+                </div>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('chat')">💬 Chat</button>
+                    <button class="tab" onclick="showTab('search')">🔍 Search</button>
+                    <button class="tab" onclick="showTab('summarize')">📝 Summarize</button>
+                </div>
+                
+                <!-- Chat Tab -->
+                <div id="chat-tab">
+                    <div class="chat-messages" id="chat-messages"></div>
+                    <form id="chat-form">
+                        <div class="image-preview" id="image-preview" style="display: none; margin-bottom: 10px;">
+                            <img id="preview-img" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                            <button type="button" onclick="removeImage()" style="margin-left: 10px; background: #dc3545;">Remove</button>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: flex-end;">
+                            <input type="text" id="chat-input" placeholder="Type your message or upload an image..." style="flex: 1;">
+                            <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
+                            <button type="button" onclick="document.getElementById('image-input').click()" style="background: #28a745;">📷</button>
+                            <button type="submit">Send</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Search Tab -->
+                <div id="search-tab" class="hidden">
+                    <form id="search-form">
+                        <div class="form-group">
+                            <label>Ask me anything:</label>
+                            <input type="text" id="search-input" placeholder="What would you like to know?" required>
+                        </div>
+                        <button type="submit">Search</button>
+                    </form>
+                    <div id="search-result"></div>
+                </div>
+                
+                <!-- Summarize Tab -->
+                <div id="summarize-tab" class="hidden">
+                    <form id="summarize-form">
+                        <div class="form-group">
+                            <label>Text to summarize:</label>
+                            <textarea id="summarize-input" rows="6" placeholder="Paste your text here..." required></textarea>
+                        </div>
+                        <button type="submit">Summarize</button>
+                    </form>
+                    <div id="summarize-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentChatId = null;
+        let selectedImage = null;
+
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user');
+        if (token && userData) {
+            currentUser = JSON.parse(userData);
+            showApp();
+        }
+        
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            
+            try {
+                const response = await fetch('http://localhost:5003/api/user/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showMessage('Registration successful!', 'success');
+                    showApp();
+                } else {
+                    showMessage(data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('Registration failed: ' + error.message, 'error');
+            }
+        });
+        
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            try {
+                const response = await fetch('http://localhost:5003/api/user/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showMessage('Login successful!', 'success');
+                    showApp();
+                } else {
+                    showMessage(data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('Login failed: ' + error.message, 'error');
+            }
+        });
+        
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = document.getElementById('chat-input').value;
+            
+            if (!message.trim() && !selectedImage) return;
+            
+
+            if (selectedImage) {
+                addMessageToChat('user', message || 'Uploaded an image', selectedImage);
+            } else {
+                addMessageToChat('user', message);
+            }
+            
+            document.getElementById('chat-input').value = '';
+            
+            try {
+                const requestBody = { message };
+                if (selectedImage) {
+                    requestBody.image = selectedImage;
+                }
+                
+                let response;
+                if (currentChatId) {
+                    response = await fetch(`http://localhost:5003/api/chat/${currentUser.id}/${currentChatId}/message`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestBody)
+                    });
+                } else {
+                    response = await fetch(`http://localhost:5003/api/chat/${currentUser.id}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestBody)
+                    });
+                }
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentChatId = data._id;
+                    const lastMessage = data.messages[data.messages.length - 1];
+                    if (lastMessage.role === 'assistant') {
+                        addMessageToChat('assistant', lastMessage.content);
+                    }
+                } else {
+                    addMessageToChat('assistant', 'Sorry, I encountered an error: ' + data.error);
+                }
+                
+               
+                removeImage();
+                
+            } catch (error) {
+                addMessageToChat('assistant', 'Sorry, I encountered an error: ' + error.message);
+            }
+        });
+        
+        // Search form
+        document.getElementById('search-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('search-input').value;
+            
+            try {
+                const response = await fetch('http://localhost:5003/api/chat/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('search-result').innerHTML = `
+                        <div class="message success">
+                            <h4>Answer:</h4>
+                            <p>${data.answer}</p>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('search-result').innerHTML = `
+                        <div class="message error">Error: ${data.error}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('search-result').innerHTML = `
+                    <div class="message error">Error: ${error.message}</div>
+                `;
+            }
+        });
+        
+        // Summarize form
+        document.getElementById('summarize-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = document.getElementById('summarize-input').value;
+            
+            try {
+                const response = await fetch('http://localhost:5003/api/chat/summarize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('summarize-result').innerHTML = `
+                        <div class="message success">
+                            <h4>Summary:</h4>
+                            <p>${data.summary}</p>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('summarize-result').innerHTML = `
+                        <div class="message error">Error: ${data.error}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('summarize-result').innerHTML = `
+                    <div class="message error">Error: ${error.message}</div>
+                `;
+            }
+        });
+        
+        function showApp() {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('app-section').classList.remove('hidden');
+            document.getElementById('username').textContent = currentUser.username;
+        }
+        
+        function showMessage(message, type) {
+            document.getElementById('auth-message').innerHTML = `
+                <div class="message ${type}">${message}</div>
+            `;
+        }
+        
+        function addMessageToChat(role, content, image = null) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${role}-message`;
+            
+            let messageContent = `<strong>${role === 'user' ? 'You' : 'AI'}:</strong> `;
+            
+            if (image && role === 'user') {
+                messageContent += `<br><img src="${image}" style="max-width: 200px; max-height: 200px; border-radius: 8px; margin: 5px 0;"><br>`;
+            }
+            
+            messageContent += content;
+            
+            messageDiv.innerHTML = messageContent;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedImage = e.target.result;
+                    document.getElementById('preview-img').src = selectedImage;
+                    document.getElementById('image-preview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removeImage() {
+            selectedImage = null;
+            document.getElementById('image-preview').style.display = 'none';
+            document.getElementById('image-input').value = '';
+        }
+        
+        function showTab(tabName) {
+            // Hide all tabs
+            document.getElementById('chat-tab').classList.add('hidden');
+            document.getElementById('search-tab').classList.add('hidden');
+            document.getElementById('summarize-tab').classList.add('hidden');
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            currentUser = null;
+            currentChatId = null;
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('app-section').classList.add('hidden');
+            document.getElementById('chat-messages').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "personal-ai-agent",
+  "version": "1.0.0",
+  "description": "Personal AI Agent with Google Gemini API",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "concurrently \"node simple-server.js\" \"python -m http.server 3000\"",
+    "server": "node simple-server.js",
+    "frontend": "python -m http.server 3000",
+    "install": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
+}

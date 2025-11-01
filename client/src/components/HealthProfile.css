@@ -1,0 +1,224 @@
+.health-profile-container {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 0 0 32px;
+  position: relative;
+}
+
+.health-profile-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.profile-page-header {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+  animation: slideInDown 0.5s ease-out;
+}
+
+.profile-page-header .back-btn {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 12px;
+  border-radius: var(--border-radius);
+  transition: all 0.3s ease;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-page-header .back-btn:hover {
+  background: var(--primary-gradient);
+  color: white;
+  transform: translateX(-4px);
+}
+
+.profile-page-header .profile-icon {
+  color: #667eea;
+}
+
+.profile-page-header h2 {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.profile-content {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.profile-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--glass-border);
+}
+
+.profile-header h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.profile-header svg {
+  color: #667eea;
+}
+
+.profile-form-group {
+  margin-bottom: 20px;
+}
+
+.profile-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.profile-form-group input,
+.profile-form-group textarea,
+.profile-form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.profile-form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.profile-form-group input:focus,
+.profile-form-group textarea:focus,
+.profile-form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.info-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.section-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.section-header svg {
+  color: #667eea;
+}
+
+.disclaimer-box {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 32px;
+  margin-bottom: 24px;
+}
+
+.disclaimer-box svg {
+  color: #ffc107;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.disclaimer-box p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .health-profile-container {
+    padding: 0;
+  }
+
+  .profile-page-header {
+    padding: 16px;
+  }
+
+  .profile-page-header h2 {
+    font-size: 20px;
+  }
+
+  .profile-content {
+    padding: 0 16px;
+    margin: 16px auto;
+  }
+
+  .profile-card {
+    padding: 24px;
+  }
+}
+
